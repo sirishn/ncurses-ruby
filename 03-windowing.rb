@@ -36,20 +36,23 @@ def initialize_footer
   @footer = Ncurses.newwin 1, @cols, @rows-1, 0
   insert_string = "Footer"
   footer_string = " " * (@cols+1)
+  #footer_string = 178.chr * (@cols+1)
   footer_string[-2-insert_string.length..-2] = insert_string
   Ncurses.wattron @footer, Ncurses::A_STANDOUT
   Ncurses.mvwprintw @footer, 0, 0, footer_string
+  Ncurses.addch 178
   Ncurses.wrefresh @footer
 end
 
 def initialize_main
   @main = create_boxed_window @rows-4, @cols, 3, 0
-
+  Ncurses.wmove @main, 1, 1
 
 end
 
 def create_boxed_window(height, width, starty, startx)
   local_win = Ncurses.newwin(height, width, starty, startx)
+  Ncurses.wattron local_win, Ncurses::A_STANDOUT
   Ncurses.box local_win, 0, 0
   Ncurses.wrefresh local_win
   return local_win 
@@ -83,7 +86,8 @@ loop do
       end
     # OTHERWISE TYPE TO SCREEN
     else
-      Ncurses.printw char.chr
+      Ncurses.wprintw @main, char.chr
+      Ncurses.wrefresh @main
     end
   rescue
   end
